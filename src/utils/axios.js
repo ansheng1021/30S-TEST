@@ -1,24 +1,20 @@
 // 引入模块
 import axios from "axios"
 import qs from 'qs'
-import store from '../store/store'
+
 // 是否允许跨域
 axios.defaults.withCredentials=true;
 // axios初始化：延迟时间，主路由地址
 let instance = axios.create({
-  baseURL: 'https://testm.30sche.com',
+  baseURL: '/api',
   timeout: 10000,
 });
  
 // 设置拦截器
 axios.interceptors.request.use(
   config => {
-    if (store.state.token) {
-      // console.log(store.state.token)
-      config.headers.token = `${store.state.token}`;
-      // config['headers']['Authorization'] = AUTH_TOKEN
-    }
-    return config;
+      console.log(config)
+      return config;
   },
   error => {
     return Promise.reject(error);

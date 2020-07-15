@@ -1,6 +1,14 @@
 <template>
     <div>
-    <div class="container"></div>
+    <div class="container">
+		<div v-show='!isError'>
+			<video oncontextmenu="return false;" style="object-fit: fill" id="videobox" class="video-js vjs-fluid vjs-big-play-centered vjs-16-9"  preload="auto" webkit-playsinline="true" playsinline="true" type="application/x-mpegURL" allowsInlineMediaPlayback=YES  webview.allowsInlineMediaPlayback=YES  ref='videoRef'  poster="" >
+				<source id="sourceBox" src="@/assets/loginVideo.mp4">
+				<p class="vjs-no-js">不支持播放</p>
+			</video>
+		</div>
+		<div v-show='isError' class="errorTip"><p>视频出错了！</p></div>
+	</div>
         <div class="login-block">
 	    	<div class="login-animate">
 	    		<div class="left-ear"></div>
@@ -24,13 +32,16 @@
                 <el-form-item prop="pass">
                      <el-input  type="password" v-model="ruleForm.pass" placeholder="请输入密码" name="password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
                 </el-form-item>
-                <div class="sub" v-loading="loading"   element-loading-spinner="el-icon-loading" @click="submitForm('ruleForm')">提交</div>
+                <div class="sub" v-loading="loading"   element-loading-spinner="el-icon-loading" @click="submitForm('ruleForm')">登录</div>
             </el-form>
 	    </div>
    </div>
 </template>
 <script>
 import $ from 'jquery'
+import videojs from 'video.js'
+import 'videojs-contrib-hls'
+import 'video.js/dist/video-js.css'
 import jparticle from '../../js/jparticle.js'
 export default {
     name:'login',
@@ -51,11 +62,41 @@ export default {
                      ],
             },
             loading: false,
-            message:''
+            message:'',
+			isError:false
         }
     },
     methods:{
         // 头像demo
+		initPlayer(){
+            var player = videojs('videobox',{
+                    bigPlayButton: false,
+                    textTrackDisplay: true,
+                    posterImage: true,
+                    errorDisplay: false,
+                    controlBar: false,
+                    playbackRates: [0.5, 1, 1.5, 2],
+                    ControlBar:{
+                        customControlSpacer: false
+                    },
+					loop:true
+                },
+                function onPlayerReady(){
+                    this.play();
+                    setTimeout(() => {   //延时确保能监听到视频源错误
+                        var mediaError = this.error();
+                        if(mediaError!=null && mediaError.code){
+                            _this.isError=true
+                            Dialog.alert({
+                                message: '啊哦，播放出错了。<br>请刷新重试，如无法播放建议您观看其它内容。',
+                                confirmButtonText:'确定'
+                            }).then(() => {
+                                _this.goback();
+                            });
+                        }
+                    },1000);
+                });
+		},
         onload:function(){
             $(document).ready(function(){
 			$(".pwd-eye").hide();
@@ -136,20 +177,19 @@ export default {
                 let that = this
                 const data = {
                     phone:this.ruleForm.username,
-                    password:this.ruleForm.pass
+                    passwd:this.ruleForm.pass
                 }
                 this.loading =true
-                that.$axios.post('/login',data)
+                that.$axios.post('/api/login',data)
                 .then((res) => {
-                    if(res.code == 200){
+                    if(res.code == 800){
                        this.loading =false
                        this.open2();
-                        console.log(res.data.access_token)
-                       this.$store.commit("Login", res.data.info);
-                       this.$router.push('/')
+                       this.$store.dispatch("Login",res.info)
+                       this.$router.go(-1);
                     }else{
                        this.loading =false
-                       this.message = res.message;
+                       this.message = res.msg;
                        this.open3();
                     }
                 })
@@ -196,7 +236,12 @@ export default {
     },
     mounted(){
         this.onload();
-        this.canvasbackground();
+        this.initPlayer()
+        // this.canvasbackground();
+    },
+    beforeDestroy(){
+        const videoDom = this.$refs.videoRef;   //不能用document 获取节点
+        videojs(videoDom).dispose();  //销毁video实例，避免出现节点不存在 但是flash一直在执行,也避免重新进入页面video未重新声明
     }
 }
 </script>
@@ -207,6 +252,18 @@ export default {
 	align-items: center;
 	justify-content: center;
 }
+	.container{
+		width: 100%;
+		height:auto;
+		position: fixed;
+		top: 0;
+		left: 0;
+	}
+	#videobox{
+		width: 100%;
+		/*height: auto;*/
+
+	}
 .el-input{
     width:200px;
 }
@@ -216,7 +273,7 @@ export default {
 .login-block{
     position: absolute;
     top:50%;
-    left:50%;
+    right:5%;
     margin-left: -150px;
     margin-top: -200px;
 	display: flex;
@@ -224,7 +281,7 @@ export default {
 	align-items: center;
 	width: 300px;;
 	height: 400px;
-	background: #3dceba;
+	background: white;
 	border-radius: 10px;
 	box-shadow: 0 0 8px rgba(0,0,0,.3);
 }
@@ -232,7 +289,7 @@ export default {
 	width: 10em;
 	height: 10em;
 	border-radius: 5em;
-	background: #cefefb;
+	background: #ffd745;
 	margin: 20px 0;
 	position: relative;
     overflow: hidden;
@@ -458,10 +515,10 @@ input::-webkit-input-placeholder{
 .sub{
     width: 200px;
     height: 35px;
-    background-color: #CEFEFB;
+    background-color: #ffd745;
     border-radius: 3px;
     line-height: 35px;
-    color: #3DCEBA;
+    color: white;
     cursor: pointer;
 }
 
@@ -501,5 +558,5 @@ body{width: 100wh; height: 90vh; color: #fff;background: linear-gradient(-45deg,
 		background-position: 0% 50%
 	}
 }
-.container{width: 100%; height: 500px;}
+/*.container{width: 100%; height: 500px;}*/
 </style>

@@ -4,8 +4,8 @@
             <div class="swiper-container">
                 <div class="swiper-wrapper">
                     <div :key="i" class="swiper-slide" v-for="(item,i) in bannerItem">
-                        <img :src="item.url" alt="">
-                        <img :src="item.coverUrl" alt="" class="coverImg">
+                        <img :src="item.top_pic_url" alt="">
+                        <img :src="item.special_1" alt="" class="coverImg">
                     </div>
 
                 </div>
@@ -19,75 +19,86 @@
 
     export default {
         name: 'swiper',
-        data(){
+        data() {
             return {
-               bannerItem:[
-                   {
-                       id:1,
-                       url:'https://img-space.30sche.com/other/202007/13/bf64b5dd123134a893d069e5286f76c0.png',
-                       coverUrl:'https://img-space.30sche.com/other/202007/13/fef0f2ea21446cf92ba80f6a8de775c7.png'
-                   },
-                   {
-                       id:2,
-                       url:'https://img-space.30sche.com/other/202007/13/5d633d6176b1f9fb0f654e66261da35b.png',
-                       coverUrl:'https://img-space.30sche.com/other/202007/13/fef0f2ea21446cf92ba80f6a8de775c7.png'
-                   },
-                   {
-                       id:3,
-                       url:'https://img-space.30sche.com/other/202007/13/13ff416ba2b3dca3f3876203e238c850.jpg',
-                       coverUrl:'https://img-space.30sche.com/other/202007/13/f7f06102949ce036788e1104b4b97ee6.jpg'
-                   },
-               ]
+                // bannerItem: [
+                //     // {
+                //     //     id: 1,
+                //     //     url: 'https://img-space.30sche.com/other/202007/13/bf64b5dd123134a893d069e5286f76c0.png',
+                //     //     coverUrl: 'https://img-space.30sche.com/other/202007/13/fef0f2ea21446cf92ba80f6a8de775c7.png'
+                //     // },
+                //     // {
+                //     //     id: 2,
+                //     //     url: 'https://img-space.30sche.com/other/202007/13/5d633d6176b1f9fb0f654e66261da35b.png',
+                //     //     coverUrl: 'https://img-space.30sche.com/other/202007/13/fef0f2ea21446cf92ba80f6a8de775c7.png'
+                //     // },
+                //     // {
+                //     //     id: 3,
+                //     //     url: 'https://img-space.30sche.com/other/202007/13/13ff416ba2b3dca3f3876203e238c850.jpg',
+                //     //     coverUrl: 'https://img-space.30sche.com/other/202007/13/f7f06102949ce036788e1104b4b97ee6.jpg'
+                //     // },
+                // ]
             }
         },
         mounted() {
-            new Swiper('#certify .swiper-container', {
-                watchSlidesProgress: true,
-                slidesPerView: 'auto',
-                centeredSlides: true,
-                loop: true,
-                loopedSlides: 3,
-                autoplay: true,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    //clickable :true,
-                },
-                on: {
-                    progress: function (progress) {
-                        var i = this.slides.length;
-                        for (i = 0; i < this.slides.length; i++) {
-                            var slide = this.slides.eq(i);
-                            var slideProgress = this.slides[i].progress;
-                            var modify = 1;
-                            if (Math.abs(slideProgress) > 1) {
-                                modify = (Math.abs(slideProgress) - 1) * 0.3 + 1;
-                            }
-                            var translate = slideProgress * modify * 60 + 'px';
-                            var scale = 1 - Math.abs(slideProgress) / 5;
-                            var zIndex = 999 - Math.abs(Math.round(10 * slideProgress));
-                            slide.transform('translateX(' + translate + ') scale(' + scale + ')');
-                            slide.css('zIndex', zIndex);
-                            slide.css('opacity', 1);
-                            if (Math.abs(slideProgress) > 1) {
-                                slide.css('opacity', 0);
-                            }
-                        }
-                    },
-                    setTransition: function (transition) {
-                        for (var i = 0; i < this.slides.length; i++) {
-                            var slide = this.slides.eq(i)
-                            slide.transition(transition);
-                        }
-
-                    }
-                }
-
-            })
+            // this.getBanner();
+            // new Swiper('#certify .swiper-container', {
+            //     watchSlidesProgress: true,
+            //     slidesPerView: 'auto',
+            //     centeredSlides: true,
+            //     loop: true,
+            //     loopedSlides: 3,
+            //     autoplay: true,
+            //     navigation: {
+            //         nextEl: '.swiper-button-next',
+            //         prevEl: '.swiper-button-prev',
+            //     },
+            //     pagination: {
+            //         el: '.swiper-pagination',
+            //         //clickable :true,
+            //     },
+            //     on: {
+            //         progress: function (progress) {
+            //             var i = this.slides.length;
+            //             for (i = 0; i < this.slides.length; i++) {
+            //                 var slide = this.slides.eq(i);
+            //                 var slideProgress = this.slides[i].progress;
+            //                 var modify = 1;
+            //                 if (Math.abs(slideProgress) > 1) {
+            //                     modify = (Math.abs(slideProgress) - 1) * 0.3 + 1;
+            //                 }
+            //                 var translate = slideProgress * modify * 60 + 'px';
+            //                 var scale = 1 - Math.abs(slideProgress) / 5;
+            //                 var zIndex = 999 - Math.abs(Math.round(10 * slideProgress));
+            //                 slide.transform('translateX(' + translate + ') scale(' + scale + ')');
+            //                 slide.css('zIndex', zIndex);
+            //                 slide.css('opacity', 1);
+            //                 if (Math.abs(slideProgress) > 1) {
+            //                     slide.css('opacity', 0);
+            //                 }
+            //             }
+            //         },
+            //         setTransition: function (transition) {
+            //             for (var i = 0; i < this.slides.length; i++) {
+            //                 var slide = this.slides.eq(i)
+            //                 slide.transition(transition);
+            //             }
+            //
+            //         }
+            //     }
+            //
+            // })
         },
+        methods: {
+            // getBanner() {
+            //     this.$axios.get("/api/getIndexBanner")
+            //         .then((res) => {
+            //             if(res.data.length > 0){
+            //                 this.bannerItem = res.data
+            //             }
+            //         })
+            // }
+        }
     }
 </script>
 
@@ -119,7 +130,7 @@
 
     #certify .swiper-container {
         padding-bottom: 60px;
-        margin: 0 auto ;
+        margin: 0 auto;
         margin-top: 70px;
     }
 
@@ -139,14 +150,16 @@
         position: relative;
         z-index: 3;
     }
-    .coverImg{
+
+    .coverImg {
         width: 100% !important;
         height: 100% !important;
-        position: absolute!important;
-        top: 0!important;
-        left: 0!important;
-        z-index: 2!important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        z-index: 2 !important;
     }
+
     #certify .swiper-slide p {
         text-align: center;
     }

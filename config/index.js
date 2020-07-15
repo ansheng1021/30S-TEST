@@ -12,10 +12,11 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
         '/api': {
-            target: 'https://testm.30sche.com:80',//后端接口地址
+            target: 'https://testpc.30sche.com',
             changeOrigin: true,//是否允许跨越
+            secure:true,
             pathRewrite: {
-                '^/api': '/',//重写,
+                '^/api': 'https://testpc.30sche.com',
             }
         }
     },

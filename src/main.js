@@ -14,6 +14,7 @@ import store from './store/store'
 import VueLazyload from 'vue-lazyload'
 import '../src/assets/iconfont/css/iconfont.css'
 import VueRouter from 'vue-router'
+import ls from '../src/utils/localStorage'
 Vue.use(VueRouter)
 Vue.use(VueLazyload, {
   preLoad: 1.3,
@@ -34,24 +35,3 @@ new Vue({
   template: '<App/>'
 })
 // 路由守卫
-router.beforeEach((to, from, next) => {
-  var token = sessionStorage.getItem('token');
-  // 判断路由组件中的某个属性 
-  if (to.meta.requiresAuth === true) {
-    if (token) {
-      return next();
-    } else {
-      return next({name: 'login'});
-    }
-  }
-
-  if (to.meta.requiresGuest === true) {
-    if (token) {
-      return next({name: 'business'});
-    } else {
-      return next();
-    }
-  }
-
-  next();
-});

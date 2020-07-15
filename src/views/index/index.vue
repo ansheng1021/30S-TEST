@@ -1,15 +1,14 @@
 <template>
     <div>
         <!--轮播-->
-        <div class="banner-box">
-            <img :src="bannerItem[swiperIndex].coverUrl" alt="" class="coverImg">
+        <div class="banner-box" v-if="bannerItem.length > 0">
+            <img :src="bannerItem[swiperIndex].special_1" alt="" class="coverImg">
             <div id="certify">
                 <div class="swiper-container">
                     <div class="swiper-wrapper">
-                        <div :key="i" class="swiper-slide" v-for="(item,i) in bannerItem">
-                            <img :src="item.url" alt="">
-                        </div>
-
+                        <a target="_blank" :href="item.special_2" :key="i" class="swiper-slide" v-for="(item,i) in bannerItem">
+                            <img :src="item.top_pic_url" alt="">
+                        </a>
                     </div>
                 </div>
                 <div class="swiper-button-next"></div>
@@ -165,7 +164,7 @@
 </template>
 <script>
     import Swiper from 'swiper';
-    import swiper from '../../components/swiper'
+    // import swiper from '../../components/swiper'
     import swiperCover from '../../components/swiperCover'
     import h2Title from '../../components/h2Title'
     import foot from '../../components/foot'
@@ -174,7 +173,6 @@
     export default {
         name: 'index',
         components: {
-            swiper,
             h2Title,
             swiperCover,
             foot
@@ -191,21 +189,6 @@
                 logoimg: '',
                 keyword: '',
                 bannerItem: [
-                    {
-                        id: 1,
-                        url: 'https://img-space.30sche.com/other/202007/13/bf64b5dd123134a893d069e5286f76c0.png',
-                        coverUrl: 'https://img-space.30sche.com/other/202007/13/fef0f2ea21446cf92ba80f6a8de775c7.png'
-                    },
-                    {
-                        id: 2,
-                        url: 'https://img-space.30sche.com/other/202007/13/5d633d6176b1f9fb0f654e66261da35b.png',
-                        coverUrl: 'https://img-space.30sche.com/other/202007/13/d0ed90c49c4fde9d9fef56a182200efa.png'
-                    },
-                    {
-                        id: 3,
-                        url: 'https://img-space.30sche.com/other/202007/13/13ff416ba2b3dca3f3876203e238c850.jpg',
-                        coverUrl: 'https://img-space.30sche.com/other/202007/13/f7f06102949ce036788e1104b4b97ee6.jpg'
-                    },
                 ]
             }
         },
@@ -227,6 +210,8 @@
                         el: '.swiper-pagination',
                         //clickable :true,
                     },
+                    observer:true,
+                    observeParents:true,
                     on: {
                         slideChangeTransitionStart: function () {
                             vm.swiperIndex = this.realIndex
@@ -263,35 +248,47 @@
                 })
             },
             caseLoad: function () {
-                this.$axios.get('/api/cases/list?page=1&limit=' + this.limit)
-                    .then((res) => {
-                        this.list = res.data.list
-                        this.$nextTick(() => {  // 下一个UI帧再初始化swiper
-                            this.swiperCover();
-                        });
-                    })
+                // this.$axios.get('/api/cases/list?page=1&limit=' + this.limit)
+                //     .then((res) => {
+                //         this.list = res.data.list
+                //         this.$nextTick(() => {  // 下一个UI帧再初始化swiper
+                //             this.swiperCover();
+                //         });
+                //     })
             },
             companyload: function () {
-                this.$axios.get('/api/about/list')
-                    .then((res) => {
-                        var i = 4
-                        this.company_name = res.data.list[i].company_name
-                        this.keyword = res.data.list[i].keyword
-                        this.description = res.data.list[i].description
-                        this.$store.commit("Company", res.data.list[i])
-                        this.partener = res.data.list[i].company_imgsurlarr
-                        this.logoimg = res.data.list[i].logo_url
-                    })
+                // this.$axios.get('/api/about/list')
+                //     .then((res) => {
+                //         var i = 4
+                //         this.company_name = res.data.list[i].company_name
+                //         this.keyword = res.data.list[i].keyword
+                //         this.description = res.data.list[i].description
+                //         this.$store.commit("Company", res.data.list[i])
+                //         this.partener = res.data.list[i].company_imgsurlarr
+                //         this.logoimg = res.data.list[i].logo_url
+                //     })
             },
             swiperCover() {
                 this.$refs.mychild.initSwiper()
             },
+            getBanner() {
+                this.$axios.get("/api/getIndexBanner")
+                    .then((res) => {
+                        if(res.data){
+                            this.bannerItem = res.data.banner
+                            this.$nextTick(()=>{
+                                this.initSwiper()
+                            })
+
+                        }
+                    })
+            }
         },
         mounted() {
+            this.getBanner()
             new WOW().init();
             this.caseLoad();
             this.companyload();
-            this.initSwiper()
         }
     }
 </script>

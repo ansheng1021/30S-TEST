@@ -1,6 +1,6 @@
 <template>
     <div class="banner_box" v-if="header_type != false">
-        <div class="con" >
+        <div class="con">
             <router-link v-show="header_type == 1" to="/" class="logo">
                 <img class="compony-icon" :src="logo.src_white"
                      alt="">
@@ -78,9 +78,20 @@
             </ul>
 
             <div class="leftContainer">
-                <div class="user">
-                    <el-button type="text" :class="header_type == 1?'white-btn':'black-btn'"><router-link to="/login">注册</router-link></el-button>
-                    <el-button type="text" :class="header_type == 1?'white-btn':'black-btn'"><router-link to="/login">登录</router-link></el-button>
+                <div class="user" v-if="!userInfo">
+                    <el-button type="text" :class="header_type == 1?'white-btn':'black-btn'">
+                        <router-link to="/login" :class="header_type == 1?'white-btn':'black-btn'">注册</router-link>
+                    </el-button>
+                    <el-button type="text" :class="header_type == 1?'white-btn':'black-btn'">
+                        <router-link to="/login" :class="header_type == 1?'white-btn':'black-btn'">登录</router-link>
+                    </el-button>
+                </div>
+                <div class="is_login" v-else>
+                    <router-link to="/" class="infoDetail">
+                        <img :src="userInfo.avatarUrl" alt="" class="userAvatar">
+                        <span :class="header_type == 1?'white-name':'black-name'">{{userInfo.username}}</span>
+                    </router-link>
+                    <el-button @click="logout()" type="text" :class="header_type == 1?'white-btn':'black-btn'">退出</el-button>
                 </div>
             </div>
 
@@ -98,6 +109,7 @@
                     src_black: "https://www.30sche.com/src/assets/components/header/images/logo_02-8ef07cc6ad.png",
                     title: "30秒懂车"
                 },
+                userInfo: this.$store.state.userInfo,
                 header_type: this.$route.meta.header_type
             };
         },
@@ -105,12 +117,17 @@
             '$route': function () {
                 let _this = this
                 _this.header_type = _this.$route.meta.header_type
+                _this.userInfo = _this.$store.state.userInfo
             }
         },
         methods: {
             handleSelect(key, keyPath) {
                 // console.log(this.header_type)
-            }
+            },
+            logout(){
+                this.$store.dispatch('Logout')
+                this.userInfo = false
+            },
         }
     }
 </script>
@@ -147,6 +164,11 @@
         }
     }
 
+
+
+    a {
+        color: white;
+    }
     .leftContainer {
         height: 100%;
         display: flex;
@@ -159,9 +181,33 @@
             color: white;
         }
     }
-
-    a {
-        color: white;
+    .is_login {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        .infoDetail{
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        .userAvatar {
+            width: 40px;
+            height: 40px;
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .white-name {
+            color: white;
+            margin-right: 20px;
+            font-weight: bold;
+        }
+        .black-name {
+            color: black;
+            margin-right: 20px;
+            font-weight: bold;
+        }
     }
 
     .logo_txt {

@@ -42,12 +42,12 @@ export default {
     },
     methods:{
         getwximg(){
-            this.$axios.get('/api/about/list')
-                .then((res) => {
-                    var i = 4
-                    this.wximg = res.data.list[i].wechat_code_url
-                    this.beian_num = res.data.list[i].beian_num
-                    })
+            // this.$axios.get('/api/about/list')
+            //     .then((res) => {
+            //         var i = 4
+            //         this.wximg = res.data.list[i].wechat_code_url
+            //         this.beian_num = res.data.list[i].beian_num
+            //         })
 
         }
     },

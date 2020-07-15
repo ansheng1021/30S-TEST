@@ -1,4 +1,4 @@
-// import login from '@/views/login/login'
+import login from '@/views/login/login'
 import aboutUs from '@/views/aboutUs/aboutUs'
 import contact from '@/views/contact/contact'
 // import news from '@/views/news/news'
@@ -24,14 +24,14 @@ export default [
     {
         path: '/login',
         name: 'login',
-        component: ()=>import("@/views/login/login"),
-        meta: {header_type: false}
+        component: login,
+        meta: {header_type: 1}
     },
     {
         path: '/about',
         name: 'aboutUs',
         component: aboutUs,
-        meta: {header_type: 2},
+        meta: {header_type: 2,need_login:true},
     },
     {
         path: '/contact',
